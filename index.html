@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<input type="text" id="search">
+<input type="button" value="getLinks" onclick="getLinks()">
+<div id="links">
+
+</div>
+</body>
+<script type="text/javascript">
+function getLinks() {
+	
+    var term = document.getElementById("search").value; // The id of your input was "begriff", not "name"
+    writeATags(term);
+   }
+
+   function onlyUnique(value, index, self) {
+	  return self.indexOf(value) === index;
+	}
+
+function writeATags(term) {
+	
+	var url = 'http://localhost:3000/?url=' + term;
+	console.log(url);
+    fetch(url).then(response => response.json())
+        .then( (result) => {
+            var result = result.filter(onlyUnique);
+            let div=document.getElementById('links');
+            links.innerHTML += '<h2 class="urlLink">'+term+'</h2>';
+
+            result.forEach(element => {
+			    // ...use `element`...
+			    div.innerHTML +="<div class='linkText'>"+element+"</td></tr>"
+
+			});
+			rotateLinks();
+            //div.innerHTML=`title: ${result.title}<br/>message: ${result.message}`;
+        })
+        .catch(error => console.log('error:', error));
+}
+function rotateLinks() {
+	var collectLinks = document.querySelectorAll("[class='urlLink']");
+	var links = [];
+	
+	collectLinks.forEach(element => {
+		links.push(element.innerHTML.trim());
+	})
+
+	var collectInnerLinks = document.querySelectorAll("[class='linkText']");
+	var innerLinks = [];
+	collectInnerLinks.forEach(element => {
+		innerLinks.push(element.innerHTML.trim());
+	})
+	console.log(innerLinks);
+	var term = document.getElementById("search").value;
+	for (var i = 0; i < innerLinks.length;i++) {
+
+		var element = innerLinks[i];
+		
+		var url = element.replace(term, "");
+		var lowerCase = url.toLowerCase();
+		url = decodeURI(url).trim();
+		console.log(url,url.includes("https"), url.length,lowerCase,(!url.includes("https") && url.length > 2 && !isImageUrl(['png','jpg','gif','svg','jpeg'],lowerCase)));
+		if(!url.includes("https") && url.length > 2 && !isImageUrl(['.png','.jpg','.gif','.svg','.jpeg'],lowerCase)) {
+			element = prepareHtml(element);
+			console.log(links);
+			console.log(element);
+			console.log(links.includes(element));
+			
+			if(links.includes(element) == false) {
+				writeATags(element);
+				return false;
+			}
+		}
+	}
+}
+
+function isImageUrl(array,string){
+	var isFound = false;
+	const match = array.find(element => {
+	  if (string.includes(element)) {
+	    isFound = true;
+	  }
+	});
+	return isFound;
+}
+
+function prepareHtml(element) {
+	var term = document.getElementById("search").value;
+	element = element.replace(term, "");
+	return term+element.replace(term, "");
+}
+
+
+</script>
+
+</html>
+
