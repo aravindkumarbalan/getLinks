@@ -1,3 +1,7 @@
+
+
+https://user-images.githubusercontent.com/46210475/202894098-14481583-c32b-4576-bc07-03b2650c99a9.mp4
+
 ## Getting Started
 
 For this scraping process, you need to clone the git repo, you need node installed system, Lets start
